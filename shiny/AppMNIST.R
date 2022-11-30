@@ -147,6 +147,7 @@ ui <- dashboardPage(
   dashboardSidebar(width = 350,
                    fluidRow(
                      column(10, offset = 1,
+                            numericInput("Label", h3("Numero real"), value=0),
                             plotOutput("plot", 
                                        width = "90%",
                                        height = "300px",
@@ -156,7 +157,8 @@ ui <- dashboardPage(
                                                          nullOutside = T)),
                             actionLink("limpiar", "Limpiar"),
                             hr(),
-                            imageOutput("matriz")
+                            imageOutput("matriz"),
+                            
                             )
                    )
                    ),
@@ -234,7 +236,6 @@ server <- function(input, output){
                       imagen_nueva = NULL,
                       prediccionRF = NA,
                       prediccionSVM = NA,
-                      prediccionNN = NA,
                       precision_total = NA)
   
   observeEvent(input$click,
@@ -262,6 +263,8 @@ server <- function(input, output){
                  
                })
   
+
+
   output$plot <- renderPlot({
     
     plot(valores$x, valores$y, xlab = "", ylab = "", main = "",
@@ -398,6 +401,11 @@ server <- function(input, output){
              color = "red")
     
   })
+
+ # observeEvent(input$Label,{
+  
+  #  imagen2 <- cbind(label=input$Label, imagen)
+  #}) 
   
   observeEvent(input$limpiar,
                {
