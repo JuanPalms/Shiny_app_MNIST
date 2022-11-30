@@ -23,7 +23,7 @@ RUN apt-get update && \
 #RUN Rscript -e 'install.packages("renv")'
 #RUN Rscript -e 'renv::restore()'
 RUN R -e 'install.packages("tidyverse")'
-RUN R -e 'install.packages(c("httr", "jsonlite", "DT"))'
+RUN R -e 'install.packages(c("httr", "jsonlite", "DT","shinydashboard","png","caret","e1071","randomForest","shiny"))'
 
 COPY . app/
 # expose port
