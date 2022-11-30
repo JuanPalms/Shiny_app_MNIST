@@ -5,6 +5,7 @@ library(caret)
 library(e1071)
 library(randomForest)
 library(neuralnet)
+library(jsonlite)
 
 ### Definición de variables globales
 lado = 28
@@ -130,7 +131,7 @@ convertir_matriz <- function(matriz) {
   #browser()
   imagen <- as.data.frame(t(imagen))
   names(imagen) <- nombres
-  browser()
+  #browser()
   return(imagen)
   
 }
@@ -147,7 +148,7 @@ ui <- dashboardPage(
   dashboardSidebar(width = 350,
                    fluidRow(
                      column(10, offset = 1,
-                            numericInput("Label", h3("Numero real"), value=0),
+                            h3("Introduce numero a mano"),
                             plotOutput("plot", 
                                        width = "90%",
                                        height = "300px",
@@ -156,7 +157,8 @@ ui <- dashboardPage(
                                                          delayType = "throttle", 
                                                          nullOutside = T)),
                             actionLink("limpiar", "Limpiar"),
-                            hr(),
+                            numericInput("Label", h3("Numero correcto"), value=0),
+                            actionButton("save", "Guardar numero correcto"),
                             imageOutput("matriz"),
                             
                             )
@@ -236,7 +238,8 @@ server <- function(input, output){
                       imagen_nueva = NULL,
                       prediccionRF = NA,
                       prediccionSVM = NA,
-                      precision_total = NA)
+                      precision_total = NA,
+                      imagen2= NULL)
   
   observeEvent(input$click,
                {
@@ -248,10 +251,21 @@ server <- function(input, output){
                    valores$y <- c(valores$y, NA)
                    v$m <- procesar_valores(valores$y, valores$x, v$m)
                    v$imagen_nueva <- convertir_matriz(v$m)
+                   v$imagen2<-cbind(label=input$Label, convertir_matriz(v$m))
                    
                  }
                  
+                 
+  observeEvent(input$save,{
+               v$imagen2<-cbind(label=input$Label, convertir_matriz(v$m))
+               write.csv(v$imagen2,"pruebaimagen2.csv")
+               write_json(v$imagen2, "pruebaimagen2.json")
+               
+               })  
+  
                })
+          
+
   
   observeEvent(input$hover,
                {
@@ -294,7 +308,7 @@ server <- function(input, output){
     )
     
   })
-  
+  #browser()
   
   output$prediccionRF <- renderValueBox({
     
@@ -401,6 +415,7 @@ server <- function(input, output){
              color = "red")
     
   })
+ 
 
  # observeEvent(input$Label,{
   
@@ -418,7 +433,7 @@ server <- function(input, output){
                  valores$y <- NULL
                  
                })
-  
+
 ######Jalar una tabla de imagenes muestra
 
  # output$users = renderDataTable({
