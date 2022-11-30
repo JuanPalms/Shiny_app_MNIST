@@ -4,7 +4,6 @@ library(png)
 library(caret)
 library(e1071)
 library(randomForest)
-library(neuralnet)
 library(jsonlite)
 
 ### Definición de variables globales
