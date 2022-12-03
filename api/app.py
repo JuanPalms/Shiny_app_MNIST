@@ -20,12 +20,13 @@ conn = psycopg2.connect(database_uri)
 
 
 @app.route('/MNIST', methods=['GET'])
-def flights():
+def MNIST():
     cur = conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
+    user_id = request.args.get("id")
     cur.execute(f"select * from MNIST")
     results = cur.fetchall()
     cur.close()
-    return json.dumps([x._asdict() for x in results], default=int)
+    return json.dumps([x._asdict() for x in results], default=str)
 
 
 if __name__ == "__main__":

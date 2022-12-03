@@ -1,10 +1,11 @@
 library(shiny)
 library(shinydashboard)
-  library(png)
+library(png)
 library(caret)
 library(e1071)
 library(randomForest)
 library(jsonlite)
+library(DT)
 
 ### Definición de variables globales
 lado = 28
@@ -217,6 +218,19 @@ ui <- dashboardPage(
                         valueBoxOutput("precisionTotal", width = 12))
                )
              ))
+      
+      
+    ),
+    
+    fluidRow(
+      column(6, offset=3,
+             tableOutput('table')
+             
+             )
+             
+             
+             
+      
     )
       
     )
@@ -257,6 +271,7 @@ server <- function(input, output){
                  
   observeEvent(input$save,{
                v$imagen2<-cbind(label=input$Label, convertir_matriz(v$m))
+               POST('web:8080/users', body=toJSON(v$imagen2))
                write_json(v$imagen2, "pruebaimagen2.json")
                
                })  
@@ -434,9 +449,9 @@ server <- function(input, output){
 
 ######Jalar una tabla de imagenes muestra
 
- output$users = renderDataTable({
+ output$table = renderDataTable({
   print(input$save)
-   resp <- GET('web:8080/')
+   resp <- GET('web:8080/MNIST')
     df <- fromJSON(content(resp, as='text'))
     df
   })
@@ -445,8 +460,8 @@ server <- function(input, output){
 ######Tomar la imagen nueva y convertila a un array de pixeles
 
   
-  #observeEvent(input$save,{
-   # POST('web:8080/users', body=toJSON(data.frame(name=input$name,lastname=input$lastname, age=input$age)))
+ # observeEvent(input$save,{
+  # POST('web:8080/users', body=toJSON(data.frame(name=input$name,lastname=input$lastname, age=input$age)))
   #}) 
   
 
