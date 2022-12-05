@@ -6,6 +6,7 @@ library(e1071)
 library(randomForest)
 library(jsonlite)
 library(DT)
+library(httr)
 
 ### Definición de variables globales
 lado = 28
@@ -197,9 +198,7 @@ ui <- dashboardPage(
         ),
         fluidRow(
           column(6,
-                 valueBoxOutput("precisionSVM", width = 12)),
-          column(6,
-                 valueBoxOutput("precisionNN", width = 12))
+                 valueBoxOutput("precisionSVM", width = 12))
         )
       )
     ),
@@ -452,9 +451,22 @@ server <- function(input, output){
  output$table = renderDataTable({
   print(input$save)
    resp <- GET('web:8080/MNIST')
-    df <- fromJSON(content(resp, as='text'))
+   df <- fromJSON(content(resp, as='text'))
     df
   })
+ 
+ 
+ 
+
+ 
+ 
+ 
+# output$table = renderDataTable({
+ #  print(input$save)
+  # resp <- GET('web:8080/MNIST')
+  # df <- as.data.frame(fromJSON(resp))
+  # df
+ #})
   
 
 ######Tomar la imagen nueva y convertila a un array de pixeles
