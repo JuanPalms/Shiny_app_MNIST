@@ -223,7 +223,7 @@ ui <- dashboardPage(
     
     fluidRow(
       column(6, offset=3,
-             tableOutput('table')
+             dataTableOutput('table')
              
              )
              
@@ -251,7 +251,8 @@ server <- function(input, output){
                       prediccionRF = NA,
                       prediccionSVM = NA,
                       precision_total = NA,
-                      imagen2= NULL)
+                      imagen2= NULL,
+		      lab=NA)
   
   observeEvent(input$click,
                {
@@ -264,6 +265,7 @@ server <- function(input, output){
                    v$m <- procesar_valores(valores$y, valores$x, v$m)
                    v$imagen_nueva <- convertir_matriz(v$m)
                    v$imagen2<-cbind(label=input$Label, convertir_matriz(v$m))
+		   v$lab=input$Label
                    
                  }
                  
@@ -472,9 +474,9 @@ server <- function(input, output){
 ######Tomar la imagen nueva y convertila a un array de pixeles
 
   
- # observeEvent(input$save,{
-  # POST('web:8080/users', body=toJSON(data.frame(name=input$name,lastname=input$lastname, age=input$age)))
-  #}) 
+  observeEvent(input$save,{
+   POST('web:8080/MNIST', body=toJSON(data.frame(v$imagen2)))
+  }) 
   
 
   
